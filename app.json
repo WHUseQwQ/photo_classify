@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "photo_classifier",
-    "slug": "photo_classifier",
+    "name": "photo_classify",
+    "slug": "photo_classify",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
