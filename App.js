@@ -96,7 +96,7 @@ class HomeScreen extends PureComponent{
 export default createStackNavigator(
   {
     Home: HomeScreen,
-    Camera: CamerasScreen,
+    Camera: CameraScreen,
   },
   {
     initialRouteName: 'Home',
