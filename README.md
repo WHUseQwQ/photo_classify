@@ -2,7 +2,7 @@
 
 ²Î¿¼
 
-https://github.com/ivpusic/react-native-image-crop-picker#ios-1  
+https://github.com/ivpusic/react-native-image-crop-picker#install  
 
 https://blog.csdn.net/junhuahouse/article/details/89574511  
 
