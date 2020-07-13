@@ -1056,8 +1056,6 @@ export default class App extends Component {
       width: 500,
       height: 500,
       sortOrder: 'none',
-      compressImageMaxWidth: 1000,//这两行会在选择图片后将图片存在Android/应用包名/files
-      compressImageMaxHeight: 1000,//这两行会在选择图片后将图片存在Android/应用包名/files
       includeBase64: true,
       includeExif: true,
     })
