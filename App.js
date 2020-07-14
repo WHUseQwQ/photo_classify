@@ -1053,11 +1053,13 @@ export default class App extends Component {
 
   pickSingle (){
     ImagePicker.openPicker({
-      width: 500,
-      height: 500,
+      cropping: true,
+      compressImageMaxWidth: 1000,
+      compressImageMaxHeight: 1000,
       sortOrder: 'none',
       includeBase64: true,
       includeExif: true,
+      mediaType: 'photo',
     })
     .then(async (image) => {
       console.log('received image', image);
@@ -1067,12 +1069,35 @@ export default class App extends Component {
       if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
       Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
       else
-      Alert.alert("无法识别！")
+      Alert.alert("无法识别！");
     })
     .catch((e) => {
       console.log(e);
       Alert.alert(e.message ? e.message : e);
     });
+  }
+
+  pickSingleWithCamera() {
+    ImagePicker.openCamera({
+      cropping: true,
+      compressImageMaxWidth: 1000,
+      compressImageMaxHeight: 1000,
+      sortOrder: 'none',
+      includeBase64: true,
+      includeExif: true,
+      mediaType: 'photo',
+    })
+      .then(async (image) => {
+        console.log('received image', image);
+        const path = image.path;
+      const data = image.data;
+      const response = await this.getPickerMessage(data);
+      if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
+      Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
+      else
+      Alert.alert("无法识别！");
+      })
+      .catch((e) => alert(e));
   }
 
 
@@ -1082,6 +1107,13 @@ export default class App extends Component {
         <ScrollView>
         
         </ScrollView>
+
+        <TouchableOpacity
+          onPress={() => this.pickSingleWithCamera()}
+          style={styles.button}
+        >
+          <Text style={styles.text}>Select Single Image With Camera</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => this.pickSingle()}
