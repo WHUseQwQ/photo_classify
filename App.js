@@ -1,5 +1,8 @@
-import React, { Component } from 'react';
-import { Alert, Image, NativeModules, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React,{Component} from 'react';
+import { View,Text,Image, StyleSheet,Dimensions,Alert,  NativeModules, ScrollView,   TouchableOpacity } from 'react-native';
+import AwesomeButton from "react-native-really-awesome-button";
+import ImagePicker from 'react-native-image-crop-picker';
+
 const label =["background",
 "tench",
 "goldfish",
@@ -1001,26 +1004,45 @@ const label =["background",
 "bolete",
 "ear",
 "toilet tissue"]
-var ImagePicker = NativeModules.ImageCropPicker;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: 'blue',
-    marginBottom: 10,
-  },
-  text: {
-    color: 'white',
-    fontSize: 20,
-    textAlign: 'center',
-  },
+
+
+
+
+const styles1=StyleSheet.create({
+    container:{
+        flex: 1,
+                //flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: +Dimensions.get('window').width * 0.01,
+    },
+
+    title :{
+      
+      color:'#6435c9',
+      textAlign:'center',//文字居中显示
+      fontStyle:'italic',//字体是斜体
+      letterSpacing:2, //字间距
+      lineHeight:33,//行间距
+      fontFamily:'Courier',//字体
+      fontWeight:'900',//文字的粗细  bold 加粗  也可以设置成具体的字号大小（100，300,600，900是最粗的文字）
+      textDecorationLine:'line-through',//underline 文字的下划线  line-through 中间横穿的线
+      textDecorationStyle:'dashed' //double 双实线 solid 实线  dotted 点线 dashed 虚线
+
+  }
+
 });
 
-export default class App extends Component {
+ 
+
+
+
+  
+
+
+ class App extends Component {
+
   constructor() {
     super();
     this.state = {
@@ -1050,78 +1072,285 @@ export default class App extends Component {
    }
  }
 
-
-  pickSingle (){
-    ImagePicker.openPicker({
-      cropping: true,
-      compressImageMaxWidth: 1000,
-      compressImageMaxHeight: 1000,
-      sortOrder: 'none',
-      includeBase64: true,
-      includeExif: true,
-      mediaType: 'photo',
-    })
-    .then(async (image) => {
-      console.log('received image', image);
-      const path = image.path;
-      const data = image.data;
-      const response = await this.getPickerMessage(data);
-      if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
-      Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
-      else
-      Alert.alert("无法识别！");
-    })
-    .catch((e) => {
-      console.log(e);
-      Alert.alert(e.message ? e.message : e);
-    });
-  }
-
-  pickSingleWithCamera() {
-    ImagePicker.openCamera({
-      cropping: true,
-      compressImageMaxWidth: 1000,
-      compressImageMaxHeight: 1000,
-      sortOrder: 'none',
-      includeBase64: true,
-      includeExif: true,
-      mediaType: 'photo',
-    })
-      .then(async (image) => {
-        console.log('received image', image);
-        const path = image.path;
-      const data = image.data;
-      const response = await this.getPickerMessage(data);
-      if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
-      Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
-      else
-      Alert.alert("无法识别！");
-      })
-      .catch((e) => alert(e));
-  }
-
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <ScrollView>
-        
-        </ScrollView>
-
-        <TouchableOpacity
-          onPress={() => this.pickSingleWithCamera()}
-          style={styles.button}
-        >
-          <Text style={styles.text}>Select Single Image With Camera</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => this.pickSingle()}
-          style={styles.button}
-        >
-          <Text style={styles.text}>Select Single</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+ Buttonone()
+{
+    return(
+        <View style={{transform: [
+            
+            {
+              translateY: +Dimensions.get('window').width * 0.02
+            },
+            
+    
+          ],}}>
+                <AwesomeButton
+                    width={300}
+                    height={50}
+                    backgroundColor="#FFFF99"
+                    onPress={() => {
+                      ImagePicker.openPicker({
+                        cropping: true,
+                        compressImageMaxWidth: 1000,
+                        compressImageMaxHeight: 1000,
+                        sortOrder: 'none',
+                        includeBase64: true,
+                        includeExif: true,
+                        mediaType: 'photo',
+                      })
+                      .then(async (image) => {
+                        console.log('received image', image);
+                        const path = image.path;
+                        const data = image.data;
+                        const response = await {async getPickerMessage(data){  
+                          try{
+                          const response = await fetch('https://tf.yyanglin.com:81/v1/models/resnet:predict', 
+                             {
+                               method: 'POST',
+                               headers: {
+                                 Accept: 'application/json',
+                                 'Content-Type': 'application/json'
+                             },
+                               body: JSON.stringify({
+                                 instances: [{b64:data }],
+                             }),
+                           });
+                           return response.json();
+                         } 
+                         catch(error){
+                           console.error(error);
+                         }
+                       }};
+                        if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
+                        Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
+                        else
+                        Alert.alert("无法识别！");
+                      })
+                      .catch((e) => {
+                        console.log(e);
+                        Alert.alert(e.message ? e.message : e);
+                      });
+                    }
+                  }
+                >
+                <Text style={{fontSize:18,fontFamily:'Courier',}}> 从相册中选取</Text>
+           </AwesomeButton>
+           </View>
+          )
 }
+
+
+
+
+
+ Buttontwo()
+{
+    return(
+           <View style={{transform: [
+            
+            {
+              translateY: +Dimensions.get('window').width * 0.06
+            },
+            
+    
+          ],}}>
+                <AwesomeButton
+                     width={300}
+                     height={50}
+                     backgroundColor="#FFFF99"
+                    onPress={() =>{
+                      ImagePicker.openCamera({
+                        cropping: true,
+                        compressImageMaxWidth: 1000,
+                        compressImageMaxHeight: 1000,
+                        sortOrder: 'none',
+                        includeBase64: true,
+                        includeExif: true,
+                        mediaType: 'photo',
+                      })
+                        .then(async (image) => {
+                          console.log('received image', image);
+                          const path = image.path;
+                        const data = image.data;
+                        const response = await {async getPickerMessage(data){  
+                          try{
+                          const response = await fetch('https://tf.yyanglin.com:81/v1/models/resnet:predict', 
+                             {
+                               method: 'POST',
+                               headers: {
+                                 Accept: 'application/json',
+                                 'Content-Type': 'application/json'
+                             },
+                               body: JSON.stringify({
+                                 instances: [{b64:data }],
+                             }),
+                           });
+                           return response.json();
+                         } 
+                         catch(error){
+                           console.error(error);
+                         }
+                       }};
+                        if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
+                        Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
+                        else
+                        Alert.alert("无法识别！");
+                        })
+                        .catch((e) => alert(e));
+                    }}
+                >
+                     <Text style={{fontSize:18,fontFamily:'Courier',}}> 用手机拍照</Text>
+                </AwesomeButton>
+            </View>   
+           )
+}
+
+
+
+  
+    render() {
+        return(
+            <View style={styles1.container}>
+              <Text
+                    style={
+                          {fontSize:45,
+                          color:'#FF69B4',
+                          textAlign:'center',//文字居中显示
+                          fontStyle:'italic',//字体是斜体
+                          letterSpacing:4, //字间距
+                          
+                          fontFamily:'Courier',//字体
+                          fontWeight:'bold',//文字的粗细  bold 加粗  也可以设置成具体的字号大小（100，300,600，900是最粗的文字）
+                          
+                          
+                        transform: [
+            
+                        {
+                          translateY: -Dimensions.get('window').width * 0.1
+                        },
+
+                        ],
+                    
+                    }}
+                    selectable={false}
+                    > 物体识别相机 </Text>
+               {/* <View
+                    style={{alignItems:'stretch',height:50,width:100}}/> */}
+               <Image
+                    source={require('./bighead.png')}
+                    style={{width: Dimensions.get('window').width*0.85,height: Dimensions.get('window').width*0.85-40 ,
+                        transform: [
+            
+                        {
+                          translateY: -Dimensions.get('window').width * 0.07
+                        },
+                        
+                
+                      ],}}/>
+               
+               <View style={{transform: [
+            
+                {
+                  translateY: +Dimensions.get('window').width * 0.01
+                },
+                
+        
+              ],}}><AwesomeButton
+              width={Dimensions.get('window').width * 0.618}
+              height={Dimensions.get('window').width * 0.618*0.2}
+              backgroundColor="#FFFF99"
+              onPress={() => {
+                ImagePicker.openPicker({
+                  cropping: true,
+                  compressImageMaxWidth: 1000,
+                  compressImageMaxHeight: 1000,
+                  sortOrder: 'none',
+                  includeBase64: true,
+                  includeExif: true,
+                  mediaType: 'photo',
+                })
+                .then(async (image) => {
+                  console.log('received image', image);
+                  const path = image.path;
+                  const data = image.data;
+                  const response = await this.getPickerMessage(data);
+                  if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
+                  Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
+                  else
+                  Alert.alert("无法识别！");
+                })
+                .catch((e) => {
+                  console.log(e);
+                  Alert.alert(e.message ? e.message : e);
+                });
+              }
+            }
+          >
+           
+          <Text style={{fontSize:18,fontFamily:'Courier',}}> 从相册中选取</Text>
+     </AwesomeButton>
+     </View>
+                
+               {/* <View
+               
+                    style={{alignItems:'stretch',height:50,width:100,backgroundColor:'white'}}/> */}
+               
+               <View style={{transform: [
+            
+            {
+              translateY: +Dimensions.get('window').width * 0.06
+            },
+            
+    
+          ],}}>
+                <AwesomeButton
+                     width={Dimensions.get('window').width * 0.618}
+                     height={Dimensions.get('window').width * 0.618*0.2}
+                     backgroundColor="#FFFF99"
+                    onPress={() =>{
+                      ImagePicker.openCamera({
+                        cropping: true,
+                        compressImageMaxWidth: 1000,
+                        compressImageMaxHeight: 1000,
+                        sortOrder: 'none',
+                        includeBase64: true,
+                        includeExif: true,
+                        mediaType: 'photo',
+                      })
+                        .then(async (image) => {
+                          console.log('received image', image);
+                          const path = image.path;
+                        const data = image.data;
+                        const response = await this.getPickerMessage(data);
+                        if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
+                        Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
+                        else
+                        Alert.alert("无法识别！");
+                        })
+                        .catch((e) => alert(e));
+                    }}
+                >
+                     <Text style={{fontSize:18,fontFamily:'Courier',}}> 用手机拍照</Text>
+                </AwesomeButton>
+            </View>
+               <Text
+                    style={{textAlign:'center',fontSize:10,
+                    justifyContent:"flex-end",
+
+                    transform: [
+            
+                        {
+                          translateY: +Dimensions.get('window').width * 0.13
+                        },
+                    ],
+                    
+                    }}
+
+                    selectable={false}
+                    > Ver 1.0.0 </Text>
+            </View>
+        )
+    }
+  };
+  
+  export default App;
+  
