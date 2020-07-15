@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { View,Text,Image, StyleSheet,Dimensions,Alert,  NativeModules, ScrollView,   TouchableOpacity } from 'react-native';
 import AwesomeButton from "react-native-really-awesome-button";
 import ImagePicker from 'react-native-image-crop-picker';
-import { StackNavigator } from 'react-navigation';
+import { createAppContainer,createStackNavigator } from 'react-navigation';
 
 const label =["background",
 "tench",
@@ -1383,16 +1383,24 @@ class Result extends Component{
 		)
 	}
 }
-export default StackNavigator({
-        Home: {
-            screen: Home,
-        },
-        Details: {
-            screen: Result,
-        },
-    },
-    {
-        initialRouteName: 'Home',
-    }
+const AppNavigator = createStackNavigator({
+    Home: Home,
+    Result:Result
+},{
+   initialRouteName: "Home",
+},
 );
+export default createAppContainer(AppNavigator);
+// export default StackNavigator({
+//         Home: {
+//             screen: Home,
+//         },
+//         Details: {
+//             screen: Result,
+//         },
+//     },
+//     {
+//         initialRouteName: 'Home',
+//     }
+// );
 // export default App;
