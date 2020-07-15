@@ -1342,14 +1342,14 @@ class Result extends Component{
 	render() {
 		return(
 			<View style={styles1.container}>
-				<Image
+{/*				<Image
 					source={this.props.navigation.state.params.image}
 					style={{width: Dimensions.get('window').width*0.85,height: Dimensions.get('window').width*0.85-40 ,
 						transform: [
 						{
 							translateY: -Dimensions.get('window').width * 0.07
 						},],}}
-				/>
+				/>*/}
 				<Text
 					style={{textAlign:'center',fontSize:10,
 							justifyContent:"flex-end",
