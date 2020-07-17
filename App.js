@@ -1,9 +1,13 @@
 import React,{Component} from 'react';
-import { View,Text,Image, StyleSheet,Dimensions,Alert,  NativeModules, ScrollView,   TouchableOpacity } from 'react-native';
-import AwesomeButton from "react-native-really-awesome-button";
+import {ImageBackground,View,Text,Image,StyleSheet,Dimensions,Alert,NativeModules,TouchableHighlight,StatusBar,TouchableOpacity,  ScrollView,FlatList , } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import { createAppContainer,createStackNavigator } from 'react-navigation';
+import img_arr from './img_arr.js'
+import RNFS from 'react-native-fs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Header } from 'react-native/Libraries/NewAppScreen';
 
+//label为未分类标签，label1为分类标签，等翻译完成后会替换
 const label =["background",
 "tench",
 "goldfish",
@@ -1006,401 +1010,1514 @@ const label =["background",
 "ear",
 "toilet tissue"]
 
+const label1 =["background",
+"tench",
+"goldfish",
+"great white shark",
+"tiger shark",
+"hammerhead",
+"electric ray",
+"stingray",
+"cock",
+"hen",
+"ostrich",
+"brambling",
+"goldfinch",
+"house finch",
+"junco",
+"indigo bunting",
+"robin",
+"bulbul",
+"jay",
+"magpie",
+"chickadee",
+"water ouzel",
+"kite",
+"bald eagle",
+"vulture",
+"great grey owl",
+"European fire salamander",
+"common newt",
+"eft",
+"spotted salamander",
+"axolotl",
+"bullfrog",
+"tree frog",
+"tailed frog",
+"loggerhead",
+"leatherback turtle",
+"mud turtle",
+"terrapin",
+"box turtle",
+"banded gecko",
+"common iguana",
+"American chameleon",
+"whiptail",
+"agama",
+"frilled lizard",
+"alligator lizard",
+"Gila monster",
+"green lizard",
+"African chameleon",
+"Komodo dragon",
+"African crocodile",
+"American alligator",
+"triceratops",
+"thunder snake",
+"ringneck snake",
+"hognose snake",
+"green snake",
+"king snake",
+"garter snake",
+"water snake",
+"vine snake",
+"night snake",
+"boa constrictor",
+"rock python",
+"Indian cobra",
+"green mamba",
+"sea snake",
+"horned viper",
+"diamondback",
+"sidewinder",
+"trilobite",
+"harvestman",
+"scorpion",
+"black and gold garden spider",
+"barn spider",
+"garden spider",
+"black widow",
+"tarantula",
+"wolf spider",
+"tick",
+"centipede",
+"black grouse",
+"ptarmigan",
+"ruffed grouse",
+"prairie chicken",
+"peacock",
+"quail",
+"partridge",
+"African grey",
+"macaw",
+"sulphur-crested cockatoo",
+"lorikeet",
+"coucal",
+"bee eater",
+"hornbill",
+"hummingbird",
+"jacamar",
+"toucan",
+"drake",
+"red-breasted merganser",
+"goose",
+"black swan",
+"tusker",
+"echidna",
+"platypus",
+"wallaby",
+"koala",
+"wombat",
+"jellyfish",
+"sea anemone",
+"brain coral",
+"flatworm",
+"nematode",
+"conch",
+"snail",
+"slug",
+"sea slug",
+"chiton",
+"chambered nautilus",
+"Dungeness crab",
+"rock crab",
+"fiddler crab",
+"king crab",
+"American lobster",
+"spiny lobster",
+"crayfish",
+"hermit crab",
+"isopod",
+"white stork",
+"black stork",
+"spoonbill",
+"flamingo",
+"little blue heron",
+"American egret",
+"bittern",
+"crane",
+"limpkin",
+"European gallinule",
+"American coot",
+"bustard",
+"ruddy turnstone",
+"red-backed sandpiper",
+"redshank",
+"dowitcher",
+"oystercatcher",
+"pelican",
+"king penguin",
+"albatross",
+"grey whale",
+"killer whale",
+"dugong",
+"sea lion",
+"Chihuahua",
+"Japanese spaniel",
+"Maltese dog",
+"Pekinese",
+"Shih-Tzu",
+"Blenheim spaniel",
+"papillon",
+"toy terrier",
+"Rhodesian ridgeback",
+"Afghan hound",
+"basset",
+"beagle",
+"bloodhound",
+"bluetick",
+"black-and-tan coonhound",
+"Walker hound",
+"English foxhound",
+"redbone",
+"borzoi",
+"Irish wolfhound",
+"Italian greyhound",
+"whippet",
+"Ibizan hound",
+"Norwegian elkhound",
+"otterhound",
+"Saluki",
+"Scottish deerhound",
+"Weimaraner",
+"Staffordshire bullterrier",
+"American Staffordshire terrier",
+"Bedlington terrier",
+"Border terrier",
+"Kerry blue terrier",
+"Irish terrier",
+"Norfolk terrier",
+"Norwich terrier",
+"Yorkshire terrier",
+"wire-haired fox terrier",
+"Lakeland terrier",
+"Sealyham terrier",
+"Airedale",
+"cairn",
+"Australian terrier",
+"Dandie Dinmont",
+"Boston bull",
+"miniature schnauzer",
+"giant schnauzer",
+"standard schnauzer",
+"Scotch terrier",
+"Tibetan terrier",
+"silky terrier",
+"soft-coated wheaten terrier",
+"West Highland white terrier",
+"Lhasa",
+"flat-coated retriever",
+"curly-coated retriever",
+"golden retriever",
+"Labrador retriever",
+"Chesapeake Bay retriever",
+"German short-haired pointer",
+"vizsla",
+"English setter",
+"Irish setter",
+"Gordon setter",
+"Brittany spaniel",
+"clumber",
+"English springer",
+"Welsh springer spaniel",
+"cocker spaniel",
+"Sussex spaniel",
+"Irish water spaniel",
+"kuvasz",
+"schipperke",
+"groenendael",
+"malinois",
+"briard",
+"kelpie",
+"komondor",
+"Old English sheepdog",
+"Shetland sheepdog",
+"collie",
+"Border collie",
+"Bouvier des Flandres",
+"Rottweiler",
+"German shepherd",
+"Doberman",
+"miniature pinscher",
+"Greater Swiss Mountain dog",
+"Bernese mountain dog",
+"Appenzeller",
+"EntleBucher",
+"boxer",
+"bull mastiff",
+"Tibetan mastiff",
+"French bulldog",
+"Great Dane",
+"Saint Bernard",
+"Eskimo dog",
+"malamute",
+"Siberian husky",
+"dalmatian",
+"affenpinscher",
+"basenji",
+"pug",
+"Leonberg",
+"Newfoundland",
+"Great Pyrenees",
+"Samoyed",
+"Pomeranian",
+"chow",
+"keeshond",
+"Brabancon griffon",
+"Pembroke",
+"Cardigan",
+"toy poodle",
+"miniature poodle",
+"standard poodle",
+"Mexican hairless",
+"timber wolf",
+"white wolf",
+"red wolf",
+"coyote",
+"dingo",
+"dhole",
+"African hunting dog",
+"hyena",
+"red fox",
+"kit fox",
+"Arctic fox",
+"grey fox",
+"tabby",
+"tiger cat",
+"Persian cat",
+"Siamese cat",
+"Egyptian cat",
+"cougar",
+"lynx",
+"leopard",
+"snow leopard",
+"jaguar",
+"lion",
+"tiger",
+"cheetah",
+"brown bear",
+"American black bear",
+"ice bear",
+"sloth bear",
+"mongoose",
+"meerkat",
+"tiger beetle",
+"ladybug",
+"ground beetle",
+"long-horned beetle",
+"leaf beetle",
+"dung beetle",
+"rhinoceros beetle",
+"weevil",
+"fly",
+"bee",
+"ant",
+"grasshopper",
+"cricket",
+"walking stick",
+"cockroach",
+"mantis",
+"cicada",
+"leafhopper",
+"lacewing",
+"dragonfly",
+"damselfly",
+"admiral",
+"ringlet",
+"monarch",
+"cabbage butterfly",
+"sulphur butterfly",
+"lycaenid",
+"starfish",
+"sea urchin",
+"sea cucumber",
+"wood rabbit",
+"hare",
+"Angora",
+"hamster",
+"porcupine",
+"fox squirrel",
+"marmot",
+"beaver",
+"guinea pig",
+"sorrel",
+"zebra",
+"hog",
+"wild boar",
+"warthog",
+"hippopotamus",
+"ox",
+"water buffalo",
+"bison",
+"ram",
+"bighorn",
+"ibex",
+"hartebeest",
+"impala",
+"gazelle",
+"Arabian camel",
+"llama",
+"weasel",
+"mink",
+"polecat",
+"black-footed ferret",
+"otter",
+"skunk",
+"badger",
+"armadillo",
+"three-toed sloth",
+"orangutan",
+"gorilla",
+"chimpanzee",
+"gibbon",
+"siamang",
+"guenon",
+"patas",
+"baboon",
+"macaque",
+"langur",
+"colobus",
+"proboscis monkey",
+"marmoset",
+"capuchin",
+"howler monkey",
+"titi",
+"spider monkey",
+"squirrel monkey",
+"Madagascar cat",
+"indri",
+"Indian elephant",
+"African elephant",
+"lesser panda",
+"giant panda",
+"barracouta",
+"eel",
+"coho",
+"rock beauty",
+"anemone fish",
+"sturgeon",
+"gar",
+"lionfish",
+"puffer",
+"abacus",
+"abaya",
+"academic gown",
+"accordion",
+"acoustic guitar",
+"aircraft carrier",
+"airliner",
+"airship",
+"altar",
+"ambulance",
+"amphibian",
+"analog clock",
+"apiary",
+"apron",
+"ashcan",
+"assault rifle",
+"backpack",
+"bakery",
+"balance beam",
+"balloon",
+"ballpoint",
+"Band Aid",
+"banjo",
+"bannister",
+"barbell",
+"barber chair",
+"barbershop",
+"barn",
+"barometer",
+"barrel",
+"barrow",
+"baseball",
+"basketball",
+"bassinet",
+"bassoon",
+"bathing cap",
+"bath towel",
+"bathtub",
+"beach wagon",
+"beacon",
+"beaker",
+"bearskin",
+"beer bottle",
+"beer glass",
+"bell cote",
+"bib",
+"bicycle-built-for-two",
+"bikini",
+"binder",
+"binoculars",
+"birdhouse",
+"boathouse",
+"bobsled",
+"bolo tie",
+"bonnet",
+"bookcase",
+"bookshop",
+"bottlecap",
+"bow",
+"bow tie",
+"brass",
+"brassiere",
+"breakwater",
+"breastplate",
+"broom",
+"bucket",
+"buckle",
+"bulletproof vest",
+"bullet train",
+"butcher shop",
+"cab",
+"caldron",
+"candle",
+"cannon",
+"canoe",
+"can opener",
+"cardigan",
+"car mirror",
+"carousel",
+"carpenter's kit",
+"carton",
+"car wheel",
+"cash machine",
+"cassette",
+"cassette player",
+"castle",
+"catamaran",
+"CD player",
+"cello",
+"cellular telephone",
+"chain",
+"chainlink fence",
+"chain mail",
+"chain saw",
+"chest",
+"chiffonier",
+"chime",
+"china cabinet",
+"Christmas stocking",
+"church",
+"cinema",
+"cleaver",
+"cliff dwelling",
+"cloak",
+"clog",
+"cocktail shaker",
+"coffee mug",
+"coffeepot",
+"coil",
+"combination lock",
+"computer keyboard",
+"confectionery",
+"container ship",
+"convertible",
+"corkscrew",
+"cornet",
+"cowboy boot",
+"cowboy hat",
+"cradle",
+"crane",
+"crash helmet",
+"crate",
+"crib",
+"Crock Pot",
+"croquet ball",
+"crutch",
+"cuirass",
+"dam",
+"desk",
+"desktop computer",
+"dial telephone",
+"diaper",
+"digital clock",
+"digital watch",
+"dining table",
+"dishrag",
+"dishwasher",
+"disk brake",
+"dock",
+"dogsled",
+"dome",
+"doormat",
+"drilling platform",
+"drum",
+"drumstick",
+"dumbbell",
+"Dutch oven",
+"electric fan",
+"electric guitar",
+"electric locomotive",
+"entertainment center",
+"envelope",
+"espresso maker",
+"face powder",
+"feather boa",
+"file",
+"fireboat",
+"fire engine",
+"fire screen",
+"flagpole",
+"flute",
+"folding chair",
+"football helmet",
+"forklift",
+"fountain",
+"fountain pen",
+"four-poster",
+"freight car",
+"French horn",
+"frying pan",
+"fur coat",
+"garbage truck",
+"gasmask",
+"gas pump",
+"goblet",
+"go-kart",
+"golf ball",
+"golfcart",
+"gondola",
+"gong",
+"gown",
+"grand piano",
+"greenhouse",
+"grille",
+"grocery store",
+"guillotine",
+"hair slide",
+"hair spray",
+"half track",
+"hammer",
+"hamper",
+"hand blower",
+"hand-held computer",
+"handkerchief",
+"hard disc",
+"harmonica",
+"harp",
+"harvester",
+"hatchet",
+"holster",
+"home theater",
+"honeycomb",
+"hook",
+"hoopskirt",
+"horizontal bar",
+"horse cart",
+"hourglass",
+"iPod",
+"iron",
+"jack-o'-lantern",
+"jean",
+"jeep",
+"jersey",
+"jigsaw puzzle",
+"jinrikisha",
+"joystick",
+"kimono",
+"knee pad",
+"knot",
+"lab coat",
+"ladle",
+"lampshade",
+"laptop",
+"lawn mower",
+"lens cap",
+"letter opener",
+"library",
+"lifeboat",
+"lighter",
+"limousine",
+"liner",
+"lipstick",
+"Loafer",
+"lotion",
+"loudspeaker",
+"loupe",
+"lumbermill",
+"magnetic compass",
+"mailbag",
+"mailbox",
+"maillot",
+"maillot",
+"manhole cover",
+"maraca",
+"marimba",
+"mask",
+"matchstick",
+"maypole",
+"maze",
+"measuring cup",
+"medicine chest",
+"megalith",
+"microphone",
+"microwave",
+"military uniform",
+"milk can",
+"minibus",
+"miniskirt",
+"minivan",
+"missile",
+"mitten",
+"mixing bowl",
+"mobile home",
+"Model T",
+"modem",
+"monastery",
+"monitor",
+"moped",
+"mortar",
+"mortarboard",
+"mosque",
+"mosquito net",
+"motor scooter",
+"mountain bike",
+"mountain tent",
+"mouse",
+"mousetrap",
+"moving van",
+"muzzle",
+"nail",
+"neck brace",
+"necklace",
+"nipple",
+"notebook",
+"obelisk",
+"oboe",
+"ocarina",
+"odometer",
+"oil filter",
+"organ",
+"oscilloscope",
+"overskirt",
+"oxcart",
+"oxygen mask",
+"packet",
+"paddle",
+"paddlewheel",
+"padlock",
+"paintbrush",
+"pajama",
+"palace",
+"panpipe",
+"paper towel",
+"parachute",
+"parallel bars",
+"park bench",
+"parking meter",
+"passenger car",
+"patio",
+"pay-phone",
+"pedestal",
+"pencil box",
+"pencil sharpener",
+"perfume",
+"Petri dish",
+"photocopier",
+"pick",
+"pickelhaube",
+"picket fence",
+"pickup",
+"pier",
+"piggy bank",
+"pill bottle",
+"pillow",
+"ping-pong ball",
+"pinwheel",
+"pirate",
+"pitcher",
+"plane",
+"planetarium",
+"plastic bag",
+"plate rack",
+"plow",
+"plunger",
+"Polaroid camera",
+"pole",
+"police van",
+"poncho",
+"pool table",
+"pop bottle",
+"pot",
+"potter's wheel",
+"power drill",
+"prayer rug",
+"printer",
+"prison",
+"projectile",
+"projector",
+"puck",
+"punching bag",
+"purse",
+"quill",
+"quilt",
+"racer",
+"racket",
+"radiator",
+"radio",
+"radio telescope",
+"rain barrel",
+"recreational vehicle",
+"reel",
+"reflex camera",
+"refrigerator",
+"remote control",
+"restaurant",
+"revolver",
+"rifle",
+"rocking chair",
+"rotisserie",
+"rubber eraser",
+"rugby ball",
+"rule",
+"running shoe",
+"safe",
+"safety pin",
+"saltshaker",
+"sandal",
+"sarong",
+"sax",
+"scabbard",
+"scale",
+"school bus",
+"schooner",
+"scoreboard",
+"screen",
+"screw",
+"screwdriver",
+"seat belt",
+"sewing machine",
+"shield",
+"shoe shop",
+"shoji",
+"shopping basket",
+"shopping cart",
+"shovel",
+"shower cap",
+"shower curtain",
+"ski",
+"ski mask",
+"sleeping bag",
+"slide rule",
+"sliding door",
+"slot",
+"snorkel",
+"snowmobile",
+"snowplow",
+"soap dispenser",
+"soccer ball",
+"sock",
+"solar dish",
+"sombrero",
+"soup bowl",
+"space bar",
+"space heater",
+"space shuttle",
+"spatula",
+"speedboat",
+"spider web",
+"spindle",
+"sports car",
+"spotlight",
+"stage",
+"steam locomotive",
+"steel arch bridge",
+"steel drum",
+"stethoscope",
+"stole",
+"stone wall",
+"stopwatch",
+"stove",
+"strainer",
+"streetcar",
+"stretcher",
+"studio couch",
+"stupa",
+"submarine",
+"suit",
+"sundial",
+"sunglass",
+"sunglasses",
+"sunscreen",
+"suspension bridge",
+"swab",
+"sweatshirt",
+"swimming trunks",
+"swing",
+"switch",
+"syringe",
+"table lamp",
+"tank",
+"tape player",
+"teapot",
+"teddy",
+"television",
+"tennis ball",
+"thatch",
+"theater curtain",
+"thimble",
+"thresher",
+"throne",
+"tile roof",
+"toaster",
+"tobacco shop",
+"toilet seat",
+"torch",
+"totem pole",
+"tow truck",
+"toyshop",
+"tractor",
+"trailer truck",
+"tray",
+"trench coat",
+"tricycle",
+"trimaran",
+"tripod",
+"triumphal arch",
+"trolleybus",
+"trombone",
+"tub",
+"turnstile",
+"typewriter keyboard",
+"umbrella",
+"unicycle",
+"upright",
+"vacuum",
+"vase",
+"vault",
+"velvet",
+"vending machine",
+"vestment",
+"viaduct",
+"violin",
+"volleyball",
+"waffle iron",
+"wall clock",
+"wallet",
+"wardrobe",
+"warplane",
+"washbasin",
+"washer",
+"water bottle",
+"water jug",
+"water tower",
+"whiskey jug",
+"whistle",
+"wig",
+"window screen",
+"window shade",
+"Windsor tie",
+"wine bottle",
+"wing",
+"wok",
+"wooden spoon",
+"wool",
+"worm fence",
+"wreck",
+"yawl",
+"yurt",
+"web site",
+"comic book",
+"crossword puzzle",
+"street sign",
+"traffic light",
+"book jacket",
+"menu",
+"plate",
+"guacamole",
+"consomme",
+"hot pot",
+"trifle",
+"ice cream",
+"ice lolly",
+"French loaf",
+"bagel",
+"pretzel",
+"cheeseburger",
+"hotdog",
+"mashed potato",
+"head cabbage",
+"broccoli",
+"cauliflower",
+"zucchini",
+"spaghetti squash",
+"acorn squash",
+"butternut squash",
+"cucumber",
+"artichoke",
+"bell pepper",
+"cardoon",
+"mushroom",
+"Granny Smith",
+"strawberry",
+"orange",
+"lemon",
+"fig",
+"pineapple",
+"banana",
+"jackfruit",
+"custard apple",
+"pomegranate",
+"hay",
+"carbonara",
+"chocolate sauce",
+"dough",
+"meat loaf",
+"pizza",
+"potpie",
+"burrito",
+"red wine",
+"espresso",
+"cup",
+"eggnog",
+"alp",
+"bubble",
+"cliff",
+"coral reef",
+"geyser",
+"lakeside",
+"promontory",
+"sandbar",
+"seashore",
+"valley",
+"volcano",
+"ballplayer",
+"groom",
+"scuba diver",
+"rapeseed",
+"daisy",
+"yellow lady's slipper",
+"corn",
+"acorn",
+"hip",
+"buckeye",
+"coral fungus",
+"agaric",
+"gyromitra",
+"stinkhorn",
+"earthstar",
+"hen-of-the-woods",
+"bolete",
+"ear",
+"toilet tissue"];
 
+var path1=RNFS.ExternalDirectoryPath;
 
+const styles=StyleSheet.create({
+  container:{
+    flex: 1,
+    //flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: +Dimensions.get('window').height * 0.01,
+  },
 
+  buttonOne:{
+      width:Dimensions.get('window').width * 0.618,
+      height:Dimensions.get('window').width * 0.618*0.2,
+      backgroundColor:"#fde8fb",
+      padding:10,
+      alignItems: "center",
+      opacity:0.8,
+      
+      transform: [
+            
+        {
+          translateY: +Dimensions.get('window').height * 0.01,
+        },
+      ],
+      borderRadius:10,
+      borderWidth:1,
+      borderColor:'#fac7f6',
 
-const styles1=StyleSheet.create({
-		container:{
-				flex: 1,
-								//flexDirection: 'column',
-								justifyContent: 'center',
-								alignItems: 'center',
-								marginTop: +Dimensions.get('window').width * 0.01,
-		},
+    },
+  buttonTwo:{
+    width:Dimensions.get('window').width * 0.618,
+    height:Dimensions.get('window').width * 0.618*0.2,
+    backgroundColor:"#fde8fb",
+    padding:10,
+    alignItems: "center",
+    opacity:0.8,
+    transform: [
+            
+      {
+        translateY: +Dimensions.get('window').height * 0.06,
+      },
+    ],
+    borderRadius:10,
+    borderWidth:1,
+    borderColor:'#fac7f6',
+  },
+  buttonThree:{
+    width:Dimensions.get('window').width * 0.618,
+    height:Dimensions.get('window').width * 0.618*0.2,
+    backgroundColor:"#fde8fb",
+    padding:10,
+    alignItems: "center",
+    opacity:0.8,
+      
+    transform: [
+            
+      {
+        translateY: +Dimensions.get('window').height * 0.11,
+      },
+    ],
+    borderRadius:10,
+    borderWidth:1,
+    borderColor:'#fac7f6',
+      
 
-		title :{
+  },
+  buttonFour: {
+    marginBottom: 10,
 
-			color:'#6435c9',
-			textAlign:'center',//文字居中显示
-			fontStyle:'italic',//字体是斜体
-			letterSpacing:2, //字间距
-			lineHeight:33,//行间距
-			fontFamily:'Courier',//字体
-			fontWeight:'900',//文字的粗细  bold 加粗  也可以设置成具体的字号大小（100，300,600，900是最粗的文字）
-			textDecorationLine:'line-through',//underline 文字的下划线  line-through 中间横穿的线
-			textDecorationStyle:'dashed' //double 双实线 solid 实线  dotted 点线 dashed 虚线
-
-	}
+    width:Dimensions.get('window').width * 0.618,
+    height:Dimensions.get('window').width * 0.618*0.2,
+    backgroundColor:"#fde8fb",
+    padding:10,
+    alignItems: "center",
+    opacity:0.8,
+    transform: [
+            
+      {
+        translateY: +Dimensions.get('window').height * 0.05,
+      },
+    ],
+      
+    
+    borderRadius:10,
+    borderWidth:1,
+    borderColor:'#fac7f6',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    height: null,
+    width: null,
+    zIndex: -1,
+    backgroundColor:'rgba(0,0,0,0)',
+    opacity: 1
+  }
 
 });
 
 
 
+function getRandom1(start, end) {
+  var length = end - start + 1;
+  var num = parseInt(Math.random() * length + start);
+  return num;
+};//生成随机数，用于随机主页背景。
+
+class HomeScreen extends Component {
+
+  async getPickerMessage(data) {  
+    try{
+      const response = await fetch('https://tf.yyanglin.com:81/v1/models/resnet:predict', 
+       {
+         method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+         body: JSON.stringify({
+           instances: [{b64:data }],
+       }),
+     });
+     return response.json();
+    } 
+    catch(error){
+      console.error(error);
+    }
+  } 
 
 
 
+  writeJson (){
+    ImagePicker.openPicker({
+      cropping: true,
+      width: 1000,//因为没有实现放大查看的功能，所以在导入时要求裁剪为正方形
+      height: 1000,
+      sortOrder: 'none',
+      includeBase64: true,
+      includeExif: true,
+      mediaType: 'photo',
+    })
+    .then(async (image) => {
+      console.log('received image', image);
+      const path = image.path;
+      const data = image.data;
+      const response = await this.getPickerMessage(data);
+      if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4){
+      Alert.alert('识别成功','图片识别结果为'+label1[response.predictions[0].classes]+'，已为您放入分类相册');
+      RNFS.writeFile(path1+'/classes.json','[','utf8');
+      RNFS.writeFile(path1+'/'+label1[response.predictions[0].classes]+'.json','[','utf8');
+      const string1=JSON.stringify({classes:label1[response.predictions[0].classes]});
+      const string2=JSON.stringify({path:path});
+      RNFS.appendFile(path1+'/classes.json',string1+',','utf8');
+      RNFS.appendFile(path1+'/'+label1[response.predictions[0].classes]+'.json',string2+',','utf8');
+      }else{
+      Alert.alert('识别失败',"非常抱歉，暂时无法识别，已为您放入未分类相册");
+      RNFS.writeFile(path1+'/classes.json','[','utf8');
+      RNFS.writeFile(path1+'/未分类.json','[','utf8');
+      const string1=JSON.stringify({classes:'未分类'});
+      const string2=JSON.stringify({path:path});
+      RNFS.appendFile(path1+'/classes.json',string1+',','utf8');
+      RNFS.appendFile(path1+'/未分类.json',string2+',','utf8');}
+    });
+  }
+  DeleteJson (){
+    RNFS.unlink(path1);
+  }
 
 
-class Home extends Component {
+  render() {
 
-	constructor() {
-		super();
-		this.state = {
-			image: null,
-			images: null,
-		};
-	}
+    return(
+      <ImageBackground style={styles.backgroundImage}
+        source={img_arr['img'+getRandom1(1,2)]}>
 
-	async getPickerMessage(data) {
-		try{
-			const response = await fetch('https://tf.yyanglin.com:81/v1/models/resnet:predict',
-			{
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						instances: [{b64:data }],
-					}),
-			});
-			//this.props.navigation.navigate('Result',response);
-			return response.json();
-		}
-		catch(error){
-			console.error(error);
-		}
-	}
+          <View style={styles.container}>
+            <StatusBar
+              animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
+              hidden={false}  //是否隐藏状态栏。
+              backgroundColor={'#f8b9f4'} //状态栏的背景色
+              translucent={true}//指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
+              barStyle={'light-content'} // enum('default', 'light-content', 'dark-content') 
+            />
 
-	Buttonone() {
-		return(
-			<View style={{transform: [
-						{
-							translateY: +Dimensions.get('window').width * 0.02
-						},
-			],}}>
-				<AwesomeButton
-					width={300}
-					height={50}
-					backgroundColor="#FFFF99"
-					onPress={() => {
-						ImagePicker.openPicker({
-							cropping: true,
-							compressImageMaxWidth: 1000,
-							compressImageMaxHeight: 1000,
-							sortOrder: 'none',
-							includeBase64: true,
-							includeExif: true,
-							mediaType: 'photo',
-						})
-						.then(async (image) => {
-							console.log('received image', image);
-							const path = image.path;
-							const data = image.data;
-							const response = await {async getPickerMessage(data){
-								try{
-									const response = await fetch('https://tf.yyanglin.com:81/v1/models/resnet:predict',
-										{
-											method: 'POST',
-											headers: {
-												Accept: 'application/json',
-												'Content-Type': 'application/json'
-											},
-											body: JSON.stringify({
-												instances: [{b64:data }],
-											}),
-										});
-									return response.json();
-								}
-								catch(error){
-									console.error(error);
-								}
-							}};
-							if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
-							Alert.alert('图片识别结果为'+label[response.predictions[0].classes]+'\n置信程度为'+response.predictions[0].probabilities[response.predictions[0].classes]);
-							else
-							Alert.alert("未识别到物品");
-						})
-						.catch((e) => {
-							console.log(e);
-							Alert.alert(e.message ? e.message : e);
-						});
-					}}
-				>
-					<Text style={{fontSize:18,fontFamily:'Courier',}}> 从相册中选取</Text>
-				</AwesomeButton>
-			</View>
-		)
-	}
+            {/* <Image
+              source={require('./bighead.png')}
+              style={{width: Dimensions.get('window').width*0.75,height: Dimensions.get('window').width*0.75-35 ,
+                transform: [
+            
+                  {
+                    translateY: -Dimensions.get('window').width * 0.15
+                  },
 
+                ],}}/> */
+            }
 
+                      
+          <Text
+            style={
+              {fontSize:50,
+              color:'#FF69B4',
+              textAlign:'center',//文字居中显示
+              // fontStyle:'italic',//字体是斜体
+              letterSpacing:4, //字间距
+              
+              fontFamily:'fpywjt',//字体
+              // fontWeight:'bold',//文字的粗细  bold 加粗  也可以设置成具体的字号大小（100，300,600，900是最粗的文字）
+                          
+                          
+              transform: [
+            
+                {
+                  translateY: -Dimensions.get('window').width * 0.1
+                },
 
+              ],
+                    
+              }}
+            selectable={false}
+            > 物体识别相机 </Text>
 
+               
+          <TouchableHighlight
 
-	Buttontwo(){
-		return(
-			<View style={{transform: [
-				{
-					translateY: +Dimensions.get('window').width * 0.06
-				},
-			],}}>
-				<AwesomeButton
-					width={300}
-					height={50}
-					backgroundColor="#FFFF99"
-					onPress={() =>{
-						ImagePicker.openCamera({
-							cropping: true,
-							compressImageMaxWidth: 1000,
-							compressImageMaxHeight: 1000,
-							sortOrder: 'none',
-							includeBase64: true,
-							includeExif: true,
-							mediaType: 'photo',
-						})
-						.then(async (image) => {
-							console.log('received image', image);
-							const path = image.path;
-							const data = image.data;
-							const response = await {async getPickerMessage(data){
-								try{
-									const response = await fetch('https://tf.yyanglin.com:81/v1/models/resnet:predict',
-									{
-										method: 'POST',
-										headers: {
-											Accept: 'application/json',
-											'Content-Type': 'application/json'
-									 	},
-										body: JSON.stringify({
-											instances: [{b64:data }],
-									 	}),
-								 		});
-									return response.json();
-								}
-							 	catch(error){
-									console.error(error);
-								}
-							}};
-							if(response.predictions[0].probabilities[response.predictions[0].classes]>0.3)
-							Alert.alert('图片识别结果为'+label[response.predictions[0].classes]+'\n置信程度为'+response.predictions[0].probabilities[response.predictions[0].classes]);
-							else
-							Alert.alert("未识别到物品");
-						})
-						.catch((e) => alert(e));
-					}}
-				>
-					<Text style={{fontSize:18,fontFamily:'Courier',}}> 用手机拍照</Text>
-				</AwesomeButton>
-			</View>
-		)
-	}
+            onPress={() => {
+              ImagePicker.openPicker({
+                cropping: true,
+                compressImageMaxWidth: 1000,
+                compressImageMaxHeight: 1000,
+                sortOrder: 'none',
+                includeBase64: true,
+                includeExif: true,
+                mediaType: 'photo',
+                freeStyleCropEnabled: true,
+              })
+              .then(async (image) => {
+                console.log('received image', image);
+                const path = image.path;
+                const data = image.data;
+                const response = await this.getPickerMessage(data);
+                if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4){
+                  if(response.predictions[0].probabilities[response.predictions[0].classes]<0.6)
+                  this.props.navigation.navigate('Result',{prob:0,state:'盲猜',classes:label[response.predictions[0].classes]});
+                  else if(response.predictions[0].probabilities[response.predictions[0].classes]<0.8)
+                  this.props.navigation.navigate('Result',{prob:1,state:'觉得',classes:label[response.predictions[0].classes]});
+                  else
+                  this.props.navigation.navigate('Result',{prob:2,state:'确信',classes:label[response.predictions[0].classes]});
+                }else
+                Alert.alert("很抱歉，暂时无法识别哦，请换张图片吧");
+              })
+              
+            }}
+            style={styles.buttonOne}
+            underlayColor={'#f58eee'}>
+            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>从相册选取ヾ(´･ω･｀)ﾉ</Text>
+     
+          </TouchableHighlight>
+     
+                
+          {/* <View
+               
+            style={{alignItems:'stretch',height:50,width:100,backgroundColor:'white'}}/> */}
+               
+               
+          <TouchableHighlight 
+ 
+            onPress={() =>{
+              ImagePicker.openCamera({
+                cropping: true,
+                compressImageMaxWidth: 1000,
+                compressImageMaxHeight: 1000,
+                sortOrder: 'none',
+                includeBase64: true,
+                includeExif: true,
+                mediaType: 'photo',
+                freeStyleCropEnabled: true,
+              })
+              .then(async (image) => {
+                console.log('received image', image);
+                const path = image.path;
+                const data = image.data;
+                const response = await this.getPickerMessage(data);
+                if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4){
+                  if(response.predictions[0].probabilities[response.predictions[0].classes]<0.6)
+                  this.props.navigation.navigate('Result',{prob:0,state:'盲猜',classes:label[response.predictions[0].classes]});
+                  else if(response.predictions[0].probabilities[response.predictions[0].classes]<0.8)
+                  this.props.navigation.navigate('Result',{prob:1,state:'觉得',classes:label[response.predictions[0].classes]});
+                  else
+                  this.props.navigation.navigate('Result',{prob:2,state:'确信',classes:label[response.predictions[0].classes]});
+                }else
+                Alert.alert("很抱歉，暂时无法识别哦，请换张图片吧");
+              })
+              
+            }}
+            style={styles.buttonTwo}
+            underlayColor={'#f58eee'}>
+            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>用手机拍照|˛˙꒳​˙)♡</Text>
+          </TouchableHighlight>
 
+          <TouchableHighlight
 
+            onPress={() => this.writeJson()}
+            style={styles.buttonThree}
+            underlayColor={'#f58eee'}>
+            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>导入图片(｡･∀･)ﾉﾞ</Text>
+     
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={async () => {var result =await RNFS.readFile(path1+'/classes.json','utf8');
+              result = result.substr(0,result.length-1)+']';
+              result1 = JSON.parse(result);
+              console.log(result);
+              this.props.navigation.navigate('Details');}}
+              style={styles.buttonThree}
+              underlayColor={'#f58eee'}>
+            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>打开相册(｡･∀･)ﾉﾞ</Text>     
+          </TouchableHighlight>          
 
+          <TouchableHighlight
 
-	render() {
-		return(
-		<View style={styles1.container}>
-			<Text style={{
-					fontSize:45,
-					color:'#FF69B4',
-					textAlign:'center',//文字居中显示
-					fontStyle:'italic',//字体是斜体
-					letterSpacing:4, //字间距
+            onPress={() => {Alert.alert('提示','确认重置相册吗？',[
+                {text: '确认', onPress: () => {this.DeleteJson();Alert.alert('重置成功');}},
+                {text: '取消', onPress: () => console.log('取消重置相册'), style: 'cancel'},
+              ],
+              { cancelable: false });
+            }}
+            style={styles.buttonThree}
+            underlayColor={'#f58eee'}>
+            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>重置相册(｡･∀･)ﾉﾞ</Text>
+     
+          </TouchableHighlight>
 
-					fontFamily:'Courier',//字体
-					fontWeight:'bold',//文字的粗细  bold 加粗  也可以设置成具体的字号大小（100，300,600，900是最粗的文字）
+          <Text
+            style={{textAlign:'center',fontSize:10,
+              justifyContent:"flex-end",
+              fontFamily:'fpywjt',
 
-					transform: [
-						{
-							translateY: -Dimensions.get('window').width * 0.1
-						},
-					],
+              transform: [
+            
+                {
+                  translateY: +Dimensions.get('window').height * 0.2
+                },
 
-			}}
-			selectable={false}
-			> 物体识别相机 </Text>
-			{/* <View
-								style={{alignItems:'stretch',height:50,width:100}}/> */}
-			<Image
-				source={require('./bighead.png')}
-				style={{width: Dimensions.get('window').width*0.85,height: Dimensions.get('window').width*0.85-40 ,
-					transform: [
-					{
-						translateY: -Dimensions.get('window').width * 0.07
-					},],}}/>
+              ]       
+            }}
 
-			<View style={{
-					transform: [
-					{
-						translateY: +Dimensions.get('window').width * 0.01
-					},],}}>
-
-				<AwesomeButton
-					width={Dimensions.get('window').width * 0.618}
-					height={Dimensions.get('window').width * 0.618*0.2}
-					backgroundColor="#FFFF99"
-					onPress={() => {
-						ImagePicker.openPicker({
-							cropping: true,
-							compressImageMaxWidth: 1000,
-							compressImageMaxHeight: 1000,
-							sortOrder: 'none',
-							includeBase64: true,
-							includeExif: true,
-							mediaType: 'photo',
-						})
-						.then(async (image) => {
-							console.log('received image', image);
-							const path = image.path;
-							const data = image.data;
-
-							const response = await this.getPickerMessage(data);
-							if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
-							Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
-							else
-							Alert.alert("无法识别！");
-						})
-						.catch((e) => {
-							console.log(e);
-							Alert.alert(e.message ? e.message : e);
-						});
-					}}
-				>
-					<Text style={{fontSize:18,fontFamily:'Courier',}}> 从相册中选取</Text>
-				</AwesomeButton>
-			</View>
-
-					 {/* <View
-
-								style={{alignItems:'stretch',height:50,width:100,backgroundColor:'white'}}/> */}
-
-			<View style={{transform: [
-					{
-						translateY: +Dimensions.get('window').width * 0.06
-					},],}}>
-
-				<AwesomeButton
-					width={Dimensions.get('window').width * 0.618}
-					height={Dimensions.get('window').width * 0.618*0.2}
-					backgroundColor="#FFFF99"
-					onPress={() =>{
-						ImagePicker.openCamera({
-							cropping: true,
-							compressImageMaxWidth: 1000,
-							compressImageMaxHeight: 1000,
-							sortOrder: 'none',
-							includeBase64: true,
-							includeExif: true,
-							mediaType: 'photo',
-						})
-						.then(async (image) => {
-							console.log('received image', image);
-							const path = image.path;
-							const data = image.data;
-							const response = await this.getPickerMessage(data);
-							if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
-							Alert.alert('图片识别结果为'+label[response.predictions[0].classes]);
-							else
-							Alert.alert("无法识别！");
-						})
-						.catch((e) => alert(e));
-						}}
-				>
-					<Text style={{fontSize:18,fontFamily:'Courier',}}> 用手机拍照</Text>
-				</AwesomeButton>
-			</View>
-				<Text
-						style={{textAlign:'center',fontSize:10,
-								justifyContent:"flex-end",
-
-								transform: [
-									{
-										translateY: +Dimensions.get('window').width * 0.13
-									},
-									],
-
-							}}
-
-						selectable={false}
-				>
-					Ver 1.0.0
-				</Text>
-			</View>
-		)
-	}
+            selectable={false}
+            > Ver 1.0.0 </Text>
+          </View>
+      </ImageBackground>
+    )
+  }
 };
-class Result extends Component{
-	constructor() {
-		super();
-		this.state = {
-			image : null;
 
-		};
-	}
-	render() {
-		return(
-			<View style={styles1.container}>
-{/*				<Image
-					source={this.props.navigation.state.params.image}
-					style={{width: Dimensions.get('window').width*0.85,height: Dimensions.get('window').width*0.85-40 ,
-						transform: [
-						{
-							translateY: -Dimensions.get('window').width * 0.07
-						},],}}
-				/>*/}
-				<Text
-					style={{textAlign:'center',fontSize:10,
-							justifyContent:"flex-end",
-
-							transform: [
-								{
-									translateY: +Dimensions.get('window').width * 0.13
-								},
-							],
-
-						}}
-
-					selectable={false}
-				>{()=>{
-					if(this.props.navigation.state.params.response.predictions[0].probabilities[response.predictions[0].classes]>0.4)
-					return('图片识别结果为'+label[this.props.navigation.state.params.response.predictions[0].classes]);
-					else
-					return('无法识别！');
-				}}</Text>
-				<AwesomeButton
-					width={Dimensions.get('window').width * 0.618}
-					height={Dimensions.get('window').width * 0.618*0.2}
-					backgroundColor="#FFFF99"
-					onPress={() =>{
-						this.props.navigation.goBack();
-					}}
-				>
-					<Text style={{fontSize:18,fontFamily:'Courier',}}>再来一张</Text>
-				</AwesomeButton>
-			</View>
-		)
-	}
+function ResultPage({ route, navigation }){
+  //识别结果页面
+  const { classes } = route.params;
+  const { prob } = route.params;
+  const { state } = route.params;
+  const img_arr_2 = [require('./s1.png'),require('./s2.png'),require('./s3.png')]
+    return (
+      //逄小博将来换成软件名
+      <View style = {{alignItems: 'center',marginTop: +Dimensions.get('window').width * 0.01,justifyContent: 'center'}}>
+      <TouchableOpacity>
+        <Image source={img_arr_2[prob]}style={{width: Dimensions.get('window').width * 0.8,height: Dimensions.get('window').width * 0.8,}}/>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Text style={
+                      {fontSize:30,
+                      color:'#FF69B4',
+                      textAlign:'center',//文字居中显示
+                      fontFamily:'fpywjt',
+                      
+                    }}>逄小博{state}这张图片是</Text>
+        <Text style={
+                      {fontSize:30,
+                      color:'#FF69B4',
+                      textAlign:'center',//文字居中显示
+                      fontFamily:'fpywjt',
+                      
+                    }}>{classes}</Text>                    
+      </TouchableOpacity>
+      <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.buttonFour}
+        >
+          <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>继续识别</Text>
+      </TouchableOpacity>
+      </View>
+    )
 }
-const AppNavigator = createStackNavigator({
-    Home: Home,
-    Result:Result
-},{
-   initialRouteName: "Home",
-},
-);
-export default createAppContainer(AppNavigator);
-// export default StackNavigator({
-//         Home: {
-//             screen: Home,
-//         },
-//         Details: {
-//             screen: Result,
-//         },
-//     },
-//     {
-//         initialRouteName: 'Home',
-//     }
-// );
-// export default App;
+
+function uniqObjInArray(objarray){
+  //对象数组去重，使分类不重复
+  let len = objarray.length;
+  let tempJson = {
+      
+  };
+  let res = [];
+  for(let i = 0;i < len;i++){
+      tempJson[JSON.stringify(objarray[i])] = true;
+  }
+  console.log("tempJson is ",tempJson);
+  let keyItems= Object.keys(tempJson);
+  for(let j = 0;j < keyItems.length;j++){
+      res.push(JSON.parse(keyItems[j]));
+  }
+  return res;
+}
+
+var result1;//为未去重的分类数组
+var result3;//为路径数组
+
+class DetailsScreen extends Component {
+  //分类页面
+  constructor() {
+    super();
+    this.state = {
+      image: null,
+      images: null,
+    };
+  }
+  
+  render() {
+    var result2=uniqObjInArray(result1);//为去重后的分类数组
+    console.log(result2);
+    return (
+      <FlatList 
+          data = {(result2)}
+          keyExtractor={item => item.classes}
+          numColumns ={2}
+          renderItem={({item})=><ClassesList classes={item.classes} navigation={this.props.navigation}/>}
+        />
+    );
+  }
+}
+
+class ClassesList extends Component {
+  //分类页面中的各个分类
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <TouchableOpacity onPress={async () => {var result =await RNFS.readFile(path1+'/'+this.props.classes+'.json','utf8');
+      result = result.substr(0,result.length-1)+']';
+      result3 = JSON.parse(result);
+      console.log(result);
+      this.props.navigation.navigate('Photo');}} style={{ backgroundColor: 'blue', flex:0.5,alignItems: 'center',height: 80, borderRadius: 12,justifyContent:'center' }}>
+        <Text style={{color:'white', fontSize: 20,fontFamily:'fpywjt'}}>{this.props.classes}</Text>
+      </TouchableOpacity>
+    )
+  }
+}
+
+class PhotoScreen extends Component {
+  //相册页面
+  constructor() {
+    super();
+    this.state = {
+      image: null,
+      images: null,
+    };
+  }
+  
+  render() {
+    return (
+      <FlatList 
+          data = {(result3)}
+          keyExtractor={item => item.path}
+          numColumns ={2}
+          renderItem={({item})=><PhotoList path={item.path}/>}
+        />
+    );
+  }
+}
+
+class PhotoList extends Component {
+  //相册页面中的各个图片
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <TouchableOpacity style={{flex:0.5,}}>
+        <Image source={{uri:this.props.path}} style={{width: Dimensions.get('window').width * 0.5,height: Dimensions.get('window').width * 0.5,}}/>
+      </TouchableOpacity>
+    )
+  }
+}
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen}  options={{ title: '分类相册',header:()=>{headerMode:'none'}}} />
+        <Stack.Screen name="Details" component={DetailsScreen} options={{ title: '分类' }}/>
+        <Stack.Screen name="Photo" component={PhotoScreen} options={{ title: '相册' }}/>
+        <Stack.Screen name="Result" component={ResultPage} options={{ title: '识别结果' }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+const Stack = createStackNavigator();
+export default App;
