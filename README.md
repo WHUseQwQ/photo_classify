@@ -1,54 +1,32 @@
-## iOS¶ËĞèÒªµÄ²Ù×÷
-
-²Î¿¼
-
-https://github.com/ivpusic/react-native-image-crop-picker#install  
-
-https://blog.csdn.net/junhuahouse/article/details/89574511  
-
-https://www.youtube.com/watch?v=ts9AM790NPQ&feature=youtu.be  
-
-## °²×¿¶ËĞèÒªµÄ²Ù×÷
-
-#### 1¡¢ÔÚÏîÄ¿Ä¿Â¼ÏÂÖ´ĞĞ
+## å­—ä½“æ–‡ä»¶å¯¼å…¥
 ```
-$ yarn add react-native-image-crop-picker
-$ npx react-native link react-native-image-crop-picker
-$ npm install native-base                           //ºÃÏñ²»ĞèÒª
-$ npx react-native link native-base                 //ºÃÏñ²»ĞèÒª
+å°†ä¸¤ä¸ªttfå­—ä½“æ–‡ä»¶æ”¾å…¥.\android\app\src\main\assets\fontsç›®å½•ä¸‹
 ```
-#### 2¡¢ÔÚandroid/build.gradle²åÈë
+## åº”ç”¨å›¾æ ‡æ–‡ä»¶å¯¼å…¥
 ```
-allprojects {
-    repositories {
-      mavenLocal()
-      jcenter()
-      maven { url "$rootDir/../node_modules/react-native/android" }
-
-      // ADD THIS
-      maven { url 'https://maven.google.com' }
-    
-      // ADD THIS
-      maven { url "https://www.jitpack.io" }
-    }
-}
+å°†res.zipè§£å‹ï¼Œå°†æ–‡ä»¶è¦†ç›–.\android\app\src\main\resç›®å½•ä¸‹çš„æ–‡ä»¶
 ```
-#### 3¡¢ÔÚandroid/app/build.gradle²åÈë
+## èƒŒæ™¯å›¾ç‰‡æ–‡ä»¶å¯¼å…¥
 ```
-android {
+å°†imgBackgroundç›®å½•ä¸‹è½½åˆ°é¡¹ç›®æ–‡ä»¶ä¸­ï¼Œå°†img_arr.jsä¸‹è½½åˆ°é¡¹ç›®ä¸­
+å¦‚è¦è‡ªè¡Œæ·»åŠ éšæœºçš„èƒŒæ™¯å›¾åº“ï¼Œåªè¦å°†å›¾ç‰‡å¯¼å…¥åˆ°imgBackgroundæ–‡ä»¶å¤¹ä¸­ï¼Œå¹¶åœ¨img_arr.jsä¸­æ·»åŠ 
+export default{
+    img1:require('./imgBackgrond/bighead.png'),
+    img2:require('./imgBackground/background1.jpg'),
     ...
-
-    defaultConfig {
-        ...
-        vectorDrawables.useSupportLibrary = true
-        ...
+    //ADD your picture
+    imgn:require('./imgBackground/pictureName'),
+    .....
+};
+å¹¶åœ¨ç”Ÿæˆéšæœºæ•°çš„å‡½æ•°ä¸­ä¿®æ”¹éšæœºæ•°èŒƒå›´
+class HomeScreen extends Component {
+......
+    render(){
+        return(
+        <ImageBackground style={styles.backgroundImage}
+        source={img_arr['img'+getRandom1(1,n)]}>  //Change 'n' here
+        ......
+        )
     }
-    ...
+......
 }
-```
-#### 4¡¢ÔÚandroid/app/src/main/AndroidManifest.xml²åÈë
-```
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-```
