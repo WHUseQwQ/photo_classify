@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import {ImageBackground,View,Text,Image,StyleSheet,Dimensions,Alert,NativeModules,TouchableHighlight,StatusBar,TouchableOpacity,  ScrollView,FlatList , } from 'react-native';
+import AwesomeButton from "react-native-really-awesome-button";
 import ImagePicker from 'react-native-image-crop-picker';
 import img_arr from './img_arr.js'
 import RNFS from 'react-native-fs';
@@ -2020,7 +2021,7 @@ const styles=StyleSheet.create({
     //flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: +Dimensions.get('window').width * 0.01,
+    marginTop: +Dimensions.get('window').height * 0.01,
   },
 
   buttonOne:{
@@ -2029,11 +2030,12 @@ const styles=StyleSheet.create({
       backgroundColor:"#fde8fb",
       padding:10,
       alignItems: "center",
+      opacity:0.8,
       
       transform: [
             
         {
-          translateY: +Dimensions.get('window').width * 0.01,
+          translateY: +Dimensions.get('window').height * 0.01,
         },
       ],
       borderRadius:10,
@@ -2047,10 +2049,11 @@ const styles=StyleSheet.create({
     backgroundColor:"#fde8fb",
     padding:10,
     alignItems: "center",
+    opacity:0.8,
     transform: [
             
       {
-        translateY: +Dimensions.get('window').width * 0.06,
+        translateY: +Dimensions.get('window').height * 0.06,
       },
     ],
     borderRadius:10,
@@ -2063,11 +2066,12 @@ const styles=StyleSheet.create({
     backgroundColor:"#fde8fb",
     padding:10,
     alignItems: "center",
+    opacity:0.8,
       
     transform: [
             
       {
-        translateY: +Dimensions.get('window').width * 0.11,
+        translateY: +Dimensions.get('window').height * 0.11,
       },
     ],
     borderRadius:10,
@@ -2084,19 +2088,15 @@ const styles=StyleSheet.create({
     backgroundColor:"#fde8fb",
     padding:10,
     alignItems: "center",
+    opacity:0.8,
     transform: [
             
       {
-        translateY: +Dimensions.get('window').width * 0.05,
+        translateY: +Dimensions.get('window').height * 0.05,
       },
     ],
       
-    transform: [
-            
-      {
-         translateY: +Dimensions.get('window').width * 0.1,
-      },
-    ],
+    
     borderRadius:10,
     borderWidth:1,
     borderColor:'#fac7f6',
@@ -2109,7 +2109,9 @@ const styles=StyleSheet.create({
     bottom: 0,
     height: null,
     width: null,
-    zIndex: -1
+    zIndex: -1,
+    backgroundColor:'rgba(0,0,0,0)',
+    opacity: 1
   }
 
 });
@@ -2187,7 +2189,7 @@ class HomeScreen extends Component {
 
     return(
       <ImageBackground style={styles.backgroundImage}
-        source={img_arr['img'+getRandom1(1,2)]}>
+        source={img_arr['img'+getRandom1(1,3)]}>
 
           <View style={styles.container}>
             <StatusBar
@@ -2310,7 +2312,7 @@ class HomeScreen extends Component {
             }}
             style={styles.buttonTwo}
             underlayColor={'#f58eee'}>
-            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>用手机拍照ヾ(≧∇≦*)ゝ</Text>
+            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>用手机拍照|˛˙꒳​˙)♡</Text>
           </TouchableHighlight>
 
           <TouchableHighlight
@@ -2354,7 +2356,7 @@ class HomeScreen extends Component {
               transform: [
             
                 {
-                  translateY: +Dimensions.get('window').width * 0.28
+                  translateY: +Dimensions.get('window').height * 0.2
                 },
 
               ]       
@@ -2373,12 +2375,12 @@ function ResultPage({ route, navigation }){
   const { classes } = route.params;
   const { prob } = route.params;
   const { state } = route.params;
-  const img_arr = [require('./s1.png'),require('./s2.png'),require('./s3.png')]
+  const img_arr_2 = [require('./s1.png'),require('./s2.png'),require('./s3.png')]
     return (
       //逄小博将来换成软件名
       <View style = {{alignItems: 'center',marginTop: +Dimensions.get('window').width * 0.01,justifyContent: 'center'}}>
       <TouchableOpacity>
-        <Image source={img_arr[prob]}style={{width: Dimensions.get('window').width * 0.8,height: Dimensions.get('window').width * 0.8,}}/>
+        <Image source={img_arr_2[prob]}style={{width: Dimensions.get('window').width * 0.8,height: Dimensions.get('window').width * 0.8,}}/>
       </TouchableOpacity>
       <TouchableOpacity>
         <Text style={
