@@ -11,7 +11,7 @@
 将imgBackground目录下载到项目文件中，将img_arr.js下载到项目中
 如要自行添加随机的背景图库，只要将图片导入到imgBackground文件夹中，并在img_arr.js中添加(最好在图形编辑器中将透明度降低至60以下)
 export default{
-    img1:require('./imgBackgrond/bighead.png'),
+    img1:require('./imgBackground/bighead.png'),
     img2:require('./imgBackground/background1.jpg'),
     ...
     //ADD your picture
