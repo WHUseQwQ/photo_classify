@@ -1,6 +1,5 @@
 import React,{Component} from 'react';
 import {ImageBackground,View,Text,Image,StyleSheet,Dimensions,Alert,NativeModules,TouchableHighlight,StatusBar,TouchableOpacity,  ScrollView,FlatList , } from 'react-native';
-import AwesomeButton from "react-native-really-awesome-button";
 import ImagePicker from 'react-native-image-crop-picker';
 import img_arr from './img_arr.js'
 import RNFS from 'react-native-fs';
