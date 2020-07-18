@@ -682,7 +682,7 @@ const label =["背景",
 "小型摩托车",
 "越野自行车",
 "山顶帐篷",
-"老鼠",
+"鼠标",
 "捕鼠器",
 "搬运车",
 "枪口",
@@ -1684,7 +1684,7 @@ const label1 =["水中世界",
 "交通",
 "交通",
 "工具",
-"爬行动物",
+"电子产品",
 "工具",
 "交通",
 "生活所见",
@@ -2163,17 +2163,17 @@ class HomeScreen extends Component {
       const data = image.data;
       const response = await this.getPickerMessage(data);
       if(response.predictions[0].probabilities[response.predictions[0].classes]>0.4){
-      Alert.alert('识别成功','图片识别结果为'+label1[response.predictions[0].classes]+'，已为您放入分类相册');
-      RNFS.writeFile(path1+'/classes.json','[','utf8');
-      RNFS.writeFile(path1+'/'+label1[response.predictions[0].classes]+'.json','[','utf8');
+      Alert.alert('识别成功','逄小博觉得这张图片是'+label[response.predictions[0].classes]+'，已为您放入'+label1[response.predictions[0].classes]+'分类');
+      RNFS.write(path1+'/classes.json','[',0,'utf8');
+      RNFS.write(path1+'/'+label1[response.predictions[0].classes]+'.json','[',0,'utf8');
       const string1=JSON.stringify({classes:label1[response.predictions[0].classes]});
       const string2=JSON.stringify({path:path});
       RNFS.appendFile(path1+'/classes.json',string1+',','utf8');
       RNFS.appendFile(path1+'/'+label1[response.predictions[0].classes]+'.json',string2+',','utf8');
       }else{
-      Alert.alert('识别失败',"非常抱歉，暂时无法识别，已为您放入未分类相册");
-      RNFS.writeFile(path1+'/classes.json','[','utf8');
-      RNFS.writeFile(path1+'/未分类.json','[','utf8');
+      Alert.alert('识别失败',"非常抱歉，逄小博无能为力，已为您放入未分类相册");
+      RNFS.write(path1+'/classes.json','[',0,'utf8');
+      RNFS.write(path1+'/未分类.json','[',0,'utf8');
       const string1=JSON.stringify({classes:'未分类'});
       const string2=JSON.stringify({path:path});
       RNFS.appendFile(path1+'/classes.json',string1+',','utf8');
@@ -2215,6 +2215,29 @@ class HomeScreen extends Component {
                       
           <Text
             style={
+              {fontSize:45,
+              color:'#FF69B4',
+              textAlign:'center',//文字居中显示
+              // fontStyle:'italic',//字体是斜体
+              letterSpacing:4, //字间距
+              
+              fontFamily:'fpywjt',//字体
+              // fontWeight:'bold',//文字的粗细  bold 加粗  也可以设置成具体的字号大小（100，300,600，900是最粗的文字）
+                          
+                          
+              transform: [
+            
+                {
+                  translateY: -Dimensions.get('window').width * 0.1
+                },
+
+              ],
+                    
+              }}
+            selectable={false}
+            > 逄小博の </Text>
+            <Text
+            style={
               {fontSize:50,
               color:'#FF69B4',
               textAlign:'center',//文字居中显示
@@ -2235,7 +2258,7 @@ class HomeScreen extends Component {
                     
               }}
             selectable={false}
-            > 物体识别相机 </Text>
+            > 识物百宝箱 </Text>
 
                
           <TouchableHighlight
@@ -2270,7 +2293,7 @@ class HomeScreen extends Component {
             }}
             style={styles.buttonOne}
             underlayColor={'#f58eee'}>
-            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>从相册选取ヾ(´･ω･｀)ﾉ</Text>
+            <Text style={{fontSize:18,fontFamily:'hysrt',letterSpacing:1,}}>从相册选取ヾ(´･ω･｀)</Text>
      
           </TouchableHighlight>
      
